@@ -1,0 +1,80 @@
+________________________________________
+🌍 Hiddekel Construction Website – Premium Full-Stack Web Application
+Goal:
+Create a world-class, visually stunning, and fully responsive website for Hiddekel Construction, rivaling top global websites (like Apple) in design and performance. The system must include a powerful admin panel to manage all site content with ease.
+________________________________________
+🧱 Tech Stack:
+•	Backend: Python + Flask
+•	Frontend: Tailwind CSS + Jinja2 Templates
+•	Animations: Lottie (JSON-based advanced animations)
+•	Database: PostgreSQL with SQLAlchemy ORM
+•	Auth: Flask-Login (for Admin Authentication)
+•	Map Integration: Google Maps API
+•	Hosting Compatibility: Replit (for dev), scalable for deployment (e.g., Render, Vercel backend + DB, or Dockerized VPS)
+________________________________________
+🌐 Public Website Pages:
+1.	Home
+o	Hero section with animated background (Lottie)
+o	About snippet, featured stands, CTA buttons
+2.	About
+o	Vision, mission, team, company background
+3.	Stands
+o	Filterable grid of available stands
+o	Google Map integration showing location pins
+4.	Gallery
+o	High-resolution images & project highlights
+o	Lightbox viewing and category filtering
+5.	Contact
+o	Contact form (saved to DB and emailed)
+o	Embedded Google Maps
+6.	Blog
+o	Paginated posts
+o	Dynamic detail pages for each article
+________________________________________
+🛠 Admin Dashboard Features:
+Secure admin login with role-based access. Built-in control panel for managing all website content.
+✅ Features:
+•	Dashboard Overview
+o	Quick stats: new messages, site visitors, blog views, etc.
+•	Site Settings Management
+o	Upload/change logo, favicon, background images, brand colors, etc.
+•	Stands Management
+o	Create, update, delete stands with:
+	Location (with embedded map preview)
+	Price, description, availability
+•	Blog Management
+o	Full CRUD for blog posts
+o	Rich text editor (Markdown/HTML)
+•	Gallery Manager
+o	Upload images, add categories/tags
+•	Messages
+o	View messages submitted from the contact form
+•	User Management
+o	View all users who signed up (optional feature)
+o	Messaging system or email follow-up
+•	Downloads Manager
+o	Upload downloadable resources (house plans, brochures, etc.)
+________________________________________
+🎨 Design Guidelines:
+•	Brand Colors:
+o	Gold #D4AF37
+o	Elegant Gray #2E2E2E
+o	White #FFFFFF
+•	Design Style:
+o	Premium, clean, modern design like Apple or Tesla websites
+o	Smooth transitions and parallax scrolling
+o	Tailwind CSS utilities for mobile-first design
+o	Responsive for all devices and browsers
+•	Animations:
+o	JSON-based animations via Lottie on hero sections, buttons, icons
+________________________________________
+⚙️ Extra Features:
+•	✅ Integrated Google Maps (Stands & Contact)
+•	✅ Downloadable PDFs (house plans, brochures)
+•	✅ Dynamic SEO meta tags
+•	✅ Email notifications on form submissions
+•	✅ Sticky header with navigation
+•	✅ Interactive testimonials or success stories slider
+•	✅ Preloader animation for a luxury feel
+________________________________________
+
