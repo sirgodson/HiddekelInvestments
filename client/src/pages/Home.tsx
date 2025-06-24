@@ -22,11 +22,12 @@ export default function Home() {
       {/* Hero Section */}
       <section className="min-h-screen relative overflow-hidden bg-gradient-to-br from-hiddekel-gray via-gray-800 to-black">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
           style={{
             backgroundImage: "url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080')"
           }}
         />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/60"></div>
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
           <div className="text-center animate-fade-in-up">
@@ -40,7 +41,7 @@ export default function Home() {
             </h1>
             
             <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-              Rosewood Park - Now Selling. Premium residential stands in Harare's most sought-after development.
+              Rosewood Park - Now Selling. Premium residential stands and construction services in Harare's most sought-after development.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -91,7 +92,7 @@ export default function Home() {
             <div className="space-y-6 animate-slide-in-right">
               <h3 className="text-3xl font-bold text-hiddekel-gray">Our Mission</h3>
               <p className="text-gray-600 text-lg leading-relaxed">
-                We provide premium residential stands with world-class infrastructure, ensuring our clients can build their dream homes with confidence and peace of mind.
+                We provide premium residential stands with world-class infrastructure and comprehensive construction services, ensuring our clients can build their dream homes with confidence and peace of mind.
               </p>
               
               <div className="grid md:grid-cols-2 gap-6 mt-8">

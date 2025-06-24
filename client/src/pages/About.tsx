@@ -9,7 +9,7 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">About Hiddekel</h1>
           <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto">
-            "We are the land developers of choice" - Building Zimbabwe's future with premium residential developments.
+            "We are the land developers of choice" - Building Zimbabwe's future through premium land development and quality construction services.
           </p>
         </div>
       </section>
@@ -29,14 +29,14 @@ export default function About() {
               <div>
                 <h2 className="text-3xl font-bold text-hiddekel-gray mb-4">Our Vision</h2>
                 <p className="text-gray-600 text-lg leading-relaxed">
-                  To be Zimbabwe's premier land development company, creating sustainable communities that enhance the quality of life for families across the nation. We envision a future where every Zimbabwean family has access to premium residential stands with world-class infrastructure.
+                  To be Zimbabwe's premier land development and construction company, creating sustainable communities that enhance the quality of life for families across the nation. We envision a future where every Zimbabwean family has access to premium residential stands with world-class infrastructure and quality construction services.
                 </p>
               </div>
               
               <div>
                 <h2 className="text-3xl font-bold text-hiddekel-gray mb-4">Our Mission</h2>
                 <p className="text-gray-600 text-lg leading-relaxed">
-                  We provide premium residential stands with world-class infrastructure, ensuring our clients can build their dream homes with confidence and peace of mind. Our commitment extends beyond land sales to creating vibrant, well-planned communities.
+                  We provide premium residential stands with world-class infrastructure and comprehensive construction services, ensuring our clients can build their dream homes with confidence and peace of mind. Our commitment extends beyond land sales to creating vibrant, well-planned communities and delivering quality construction projects.
                 </p>
               </div>
             </div>

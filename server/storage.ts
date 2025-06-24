@@ -117,24 +117,24 @@ export class MemStorage implements IStorage {
     const samplePosts = [
       {
         title: "Rosewood Park Phase 2 Announcement",
-        content: "We're excited to announce the launch of Phase 2 of our Rosewood Park development. This new phase will feature additional premium stands with enhanced infrastructure and modern amenities.",
-        excerpt: "We're excited to announce the launch of Phase 2 with additional premium stands...",
+        content: "We're excited to announce the launch of Phase 2 of our Rosewood Park development. This new phase will feature additional premium stands with enhanced infrastructure, modern amenities, and our comprehensive construction services for clients who choose to build with us.",
+        excerpt: "We're excited to announce Phase 2 with additional premium stands and construction services...",
         category: "Development Update",
         imageUrl: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300",
         published: true
       },
       {
-        title: "Zimbabwe's Growing Real Estate Market",
-        content: "An in-depth analysis of the current trends and opportunities in Zimbabwe's property sector, highlighting the growing demand for quality residential developments.",
-        excerpt: "An analysis of the current trends and opportunities in Zimbabwe's property sector...",
+        title: "Zimbabwe's Growing Construction & Development Market",
+        content: "An in-depth analysis of the current trends and opportunities in Zimbabwe's property and construction sector, highlighting the growing demand for quality residential developments and reliable construction services.",
+        excerpt: "Analysis of current trends in Zimbabwe's property and construction sectors...",
         category: "Industry Insights",
         imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300",
         published: true
       },
       {
-        title: "5 Things to Consider When Buying Land",
-        content: "Essential factors to evaluate before making your land purchase decision, including location, infrastructure, legal considerations, and future development potential.",
-        excerpt: "Essential factors to evaluate before making your land purchase decision...",
+        title: "5 Things to Consider When Buying Land and Building",
+        content: "Essential factors to evaluate before making your land purchase and construction decisions, including location, infrastructure, legal considerations, construction quality, and future development potential.",
+        excerpt: "Essential factors for land purchase and construction decisions...",
         category: "Tips & Advice",
         imageUrl: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300",
         published: true
@@ -204,6 +204,7 @@ export class MemStorage implements IStorage {
     const user: User = { 
       ...insertUser, 
       id, 
+      role: insertUser.role || "admin",
       createdAt: new Date() 
     };
     this.users.set(id, user);
@@ -224,6 +225,9 @@ export class MemStorage implements IStorage {
     const stand: Stand = { 
       ...insertStand, 
       id, 
+      status: insertStand.status || "available",
+      features: insertStand.features || [],
+      imageUrl: insertStand.imageUrl || null,
       createdAt: new Date() 
     };
     this.stands.set(id, stand);
@@ -261,6 +265,8 @@ export class MemStorage implements IStorage {
     const post: BlogPost = { 
       ...insertPost, 
       id, 
+      imageUrl: insertPost.imageUrl || null,
+      published: insertPost.published || false,
       createdAt: new Date() 
     };
     this.blogPosts.set(id, post);
@@ -294,6 +300,7 @@ export class MemStorage implements IStorage {
     const image: GalleryImage = { 
       ...insertImage, 
       id, 
+      description: insertImage.description || null,
       createdAt: new Date() 
     };
     this.galleryImages.set(id, image);
@@ -318,6 +325,7 @@ export class MemStorage implements IStorage {
     const message: ContactMessage = { 
       ...insertMessage, 
       id, 
+      phone: insertMessage.phone || null,
       read: false,
       createdAt: new Date() 
     };
@@ -348,6 +356,7 @@ export class MemStorage implements IStorage {
     const download: Download = { 
       ...insertDownload, 
       id, 
+      description: insertDownload.description || null,
       createdAt: new Date() 
     };
     this.downloads.set(id, download);
