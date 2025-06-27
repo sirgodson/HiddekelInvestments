@@ -234,6 +234,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all gallery images (admin)
+  app.get("/api/admin/gallery", async (req, res) => {
+    try {
+      const images = await storage.getAllGalleryImages();
+      res.json(images);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch gallery images" });
+    }
+  });
+
   // Add gallery image
   app.post("/api/admin/gallery", async (req, res) => {
     try {

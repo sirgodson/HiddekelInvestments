@@ -24,7 +24,7 @@ export default function ManageGallery() {
   });
 
   const { data: galleryImages, isLoading } = useQuery<GalleryImage[]>({
-    queryKey: ["/api/gallery"],
+    queryKey: ["/api/admin/gallery"],
   });
 
   const categories = [
@@ -47,6 +47,7 @@ export default function ManageGallery() {
         title: "Image added successfully",
         description: "The new image has been added to the gallery.",
       });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/gallery"] });
       queryClient.invalidateQueries({ queryKey: ["/api/gallery"] });
       setIsDialogOpen(false);
       resetForm();
@@ -69,6 +70,7 @@ export default function ManageGallery() {
         title: "Image deleted successfully",
         description: "The image has been removed from the gallery.",
       });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/gallery"] });
       queryClient.invalidateQueries({ queryKey: ["/api/gallery"] });
     },
     onError: () => {

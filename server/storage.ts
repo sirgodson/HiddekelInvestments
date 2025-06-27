@@ -1,9 +1,20 @@
 import { 
-  users, stands, blogPosts, galleryImages, contactMessages, downloads,
-  type User, type InsertUser, type Stand, type InsertStand,
-  type BlogPost, type InsertBlogPost, type GalleryImage, type InsertGalleryImage,
-  type ContactMessage, type InsertContactMessage, type Download, type InsertDownload
+  User, 
+  InsertUser, 
+  Stand, 
+  InsertStand, 
+  BlogPost, 
+  InsertBlogPost, 
+  GalleryImage, 
+  InsertGalleryImage, 
+  ContactMessage, 
+  InsertContactMessage, 
+  Download, 
+  InsertDownload 
 } from "@shared/schema";
+import { users, stands, blogPosts, galleryImages, contactMessages, downloads } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -45,327 +56,158 @@ export interface IStorage {
   deleteDownload(id: number): Promise<boolean>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private stands: Map<number, Stand>;
-  private blogPosts: Map<number, BlogPost>;
-  private galleryImages: Map<number, GalleryImage>;
-  private contactMessages: Map<number, ContactMessage>;
-  private downloads: Map<number, Download>;
-  private currentId: number;
-
-  constructor() {
-    this.users = new Map();
-    this.stands = new Map();
-    this.blogPosts = new Map();
-    this.galleryImages = new Map();
-    this.contactMessages = new Map();
-    this.downloads = new Map();
-    this.currentId = 1;
-
-    // Initialize with default admin user
-    this.createUser({
-      username: "admin",
-      password: "admin123", // In production, this should be hashed
-      role: "admin"
-    });
-
-    // Initialize with sample data
-    this.initializeSampleData();
-  }
-
-  private async initializeSampleData() {
-    // Sample stands
-    const sampleStands = [
-      {
-        title: "Plot RS-001",
-        description: "300 sqm premium residential stand with excellent location",
-        price: "8500.00",
-        size: "300 sqm",
-        location: "Rosewood Park, Nyabira Area",
-        status: "available" as const,
-        features: ["Tarred roads", "Ready to build", "Electricity available", "Premium location"],
-        imageUrl: "https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400"
-      },
-      {
-        title: "Plot RS-002",
-        description: "Corner stand with premium location and scenic views",
-        price: "9200.00",
-        size: "300 sqm",
-        location: "Rosewood Park, Nyabira Area",
-        status: "available" as const,
-        features: ["Corner plot", "Tarred roads", "Ready to build", "Premium views"],
-        imageUrl: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400"
-      },
-      {
-        title: "Plot RS-003",
-        description: "Elevated stand with scenic views of the surrounding area",
-        price: "8800.00",
-        size: "300 sqm",
-        location: "Rosewood Park, Nyabira Area",
-        status: "reserved" as const,
-        features: ["Elevated position", "Scenic views", "Ready to build", "Water & sewer in progress"],
-        imageUrl: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400"
-      }
-    ];
-
-    for (const stand of sampleStands) {
-      await this.createStand(stand);
-    }
-
-    // Sample blog posts
-    const samplePosts = [
-      {
-        title: "Rosewood Park Phase 2 Announcement",
-        content: "We're excited to announce the launch of Phase 2 of our Rosewood Park development. This new phase will feature additional premium stands with enhanced infrastructure, modern amenities, and our comprehensive construction services for clients who choose to build with us.",
-        excerpt: "We're excited to announce Phase 2 with additional premium stands and construction services...",
-        category: "Development Update",
-        imageUrl: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300",
-        published: true
-      },
-      {
-        title: "Zimbabwe's Growing Construction & Development Market",
-        content: "An in-depth analysis of the current trends and opportunities in Zimbabwe's property and construction sector, highlighting the growing demand for quality residential developments and reliable construction services.",
-        excerpt: "Analysis of current trends in Zimbabwe's property and construction sectors...",
-        category: "Industry Insights",
-        imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300",
-        published: true
-      },
-      {
-        title: "5 Things to Consider When Buying Land and Building",
-        content: "Essential factors to evaluate before making your land purchase and construction decisions, including location, infrastructure, legal considerations, construction quality, and future development potential.",
-        excerpt: "Essential factors for land purchase and construction decisions...",
-        category: "Tips & Advice",
-        imageUrl: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300",
-        published: true
-      }
-    ];
-
-    for (const post of samplePosts) {
-      await this.createBlogPost(post);
-    }
-
-    // Sample gallery images
-    const sampleGallery = [
-      {
-        title: "Luxury Development",
-        description: "Premium residential project showcase",
-        category: "Developments",
-        imageUrl: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400"
-      },
-      {
-        title: "House Plans",
-        description: "5 pre-approved designs available",
-        category: "House Plans",
-        imageUrl: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400"
-      },
-      {
-        title: "Modern Architecture",
-        description: "Contemporary design solutions",
-        category: "Developments",
-        imageUrl: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400"
-      },
-      {
-        title: "Premium Finishes",
-        description: "Quality construction standards",
-        category: "Infrastructure",
-        imageUrl: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400"
-      },
-      {
-        title: "Planning Process",
-        description: "Detailed development planning",
-        category: "Infrastructure",
-        imageUrl: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400"
-      },
-      {
-        title: "Completed Projects",
-        description: "Delivered excellence",
-        category: "Developments",
-        imageUrl: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400"
-      }
-    ];
-
-    for (const image of sampleGallery) {
-      await this.createGalleryImage(image);
-    }
-  }
-
-  // User methods
+export class DatabaseStorage implements IStorage {
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(user => user.username === username);
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentId++;
-    const user: User = { 
-      ...insertUser, 
-      id, 
-      role: insertUser.role || "admin",
-      createdAt: new Date() 
-    };
-    this.users.set(id, user);
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
     return user;
   }
 
-  // Stand methods
   async getAllStands(): Promise<Stand[]> {
-    return Array.from(this.stands.values());
+    return await db.select().from(stands);
   }
 
   async getStand(id: number): Promise<Stand | undefined> {
-    return this.stands.get(id);
+    const [stand] = await db.select().from(stands).where(eq(stands.id, id));
+    return stand || undefined;
   }
 
   async createStand(insertStand: InsertStand): Promise<Stand> {
-    const id = this.currentId++;
-    const stand: Stand = { 
-      ...insertStand, 
-      id, 
-      status: insertStand.status || "available",
-      features: insertStand.features || [],
-      imageUrl: insertStand.imageUrl || null,
-      createdAt: new Date() 
-    };
-    this.stands.set(id, stand);
+    const [stand] = await db
+      .insert(stands)
+      .values(insertStand)
+      .returning();
     return stand;
   }
 
   async updateStand(id: number, updateData: Partial<InsertStand>): Promise<Stand | undefined> {
-    const existing = this.stands.get(id);
-    if (!existing) return undefined;
-    
-    const updated: Stand = { ...existing, ...updateData };
-    this.stands.set(id, updated);
-    return updated;
+    const [stand] = await db
+      .update(stands)
+      .set(updateData)
+      .where(eq(stands.id, id))
+      .returning();
+    return stand || undefined;
   }
 
   async deleteStand(id: number): Promise<boolean> {
-    return this.stands.delete(id);
+    const result = await db.delete(stands).where(eq(stands.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
   }
 
-  // Blog methods
   async getAllBlogPosts(): Promise<BlogPost[]> {
-    return Array.from(this.blogPosts.values());
+    return await db.select().from(blogPosts);
   }
 
   async getPublishedBlogPosts(): Promise<BlogPost[]> {
-    return Array.from(this.blogPosts.values()).filter(post => post.published);
+    return await db.select().from(blogPosts).where(eq(blogPosts.published, true));
   }
 
   async getBlogPost(id: number): Promise<BlogPost | undefined> {
-    return this.blogPosts.get(id);
+    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.id, id));
+    return post || undefined;
   }
 
   async createBlogPost(insertPost: InsertBlogPost): Promise<BlogPost> {
-    const id = this.currentId++;
-    const post: BlogPost = { 
-      ...insertPost, 
-      id, 
-      imageUrl: insertPost.imageUrl || null,
-      published: insertPost.published || false,
-      createdAt: new Date() 
-    };
-    this.blogPosts.set(id, post);
+    const [post] = await db
+      .insert(blogPosts)
+      .values(insertPost)
+      .returning();
     return post;
   }
 
   async updateBlogPost(id: number, updateData: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
-    const existing = this.blogPosts.get(id);
-    if (!existing) return undefined;
-    
-    const updated: BlogPost = { ...existing, ...updateData };
-    this.blogPosts.set(id, updated);
-    return updated;
+    const [post] = await db
+      .update(blogPosts)
+      .set(updateData)
+      .where(eq(blogPosts.id, id))
+      .returning();
+    return post || undefined;
   }
 
   async deleteBlogPost(id: number): Promise<boolean> {
-    return this.blogPosts.delete(id);
+    const result = await db.delete(blogPosts).where(eq(blogPosts.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
   }
 
-  // Gallery methods
   async getAllGalleryImages(): Promise<GalleryImage[]> {
-    return Array.from(this.galleryImages.values());
+    return await db.select().from(galleryImages);
   }
 
   async getGalleryImagesByCategory(category: string): Promise<GalleryImage[]> {
-    return Array.from(this.galleryImages.values()).filter(image => image.category === category);
+    return await db.select().from(galleryImages).where(eq(galleryImages.category, category));
   }
 
   async createGalleryImage(insertImage: InsertGalleryImage): Promise<GalleryImage> {
-    const id = this.currentId++;
-    const image: GalleryImage = { 
-      ...insertImage, 
-      id, 
-      description: insertImage.description || null,
-      createdAt: new Date() 
-    };
-    this.galleryImages.set(id, image);
+    const [image] = await db
+      .insert(galleryImages)
+      .values(insertImage)
+      .returning();
     return image;
   }
 
   async deleteGalleryImage(id: number): Promise<boolean> {
-    return this.galleryImages.delete(id);
+    const result = await db.delete(galleryImages).where(eq(galleryImages.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
   }
 
-  // Contact methods
   async getAllContactMessages(): Promise<ContactMessage[]> {
-    return Array.from(this.contactMessages.values());
+    return await db.select().from(contactMessages);
   }
 
   async getContactMessage(id: number): Promise<ContactMessage | undefined> {
-    return this.contactMessages.get(id);
+    const [message] = await db.select().from(contactMessages).where(eq(contactMessages.id, id));
+    return message || undefined;
   }
 
   async createContactMessage(insertMessage: InsertContactMessage): Promise<ContactMessage> {
-    const id = this.currentId++;
-    const message: ContactMessage = { 
-      ...insertMessage, 
-      id, 
-      phone: insertMessage.phone || null,
-      read: false,
-      createdAt: new Date() 
-    };
-    this.contactMessages.set(id, message);
+    const [message] = await db
+      .insert(contactMessages)
+      .values(insertMessage)
+      .returning();
     return message;
   }
 
   async markMessageAsRead(id: number): Promise<boolean> {
-    const message = this.contactMessages.get(id);
-    if (!message) return false;
-    
-    const updated = { ...message, read: true };
-    this.contactMessages.set(id, updated);
-    return true;
+    const [message] = await db
+      .update(contactMessages)
+      .set({ read: true })
+      .where(eq(contactMessages.id, id))
+      .returning();
+    return !!message;
   }
 
-  // Download methods
   async getAllDownloads(): Promise<Download[]> {
-    return Array.from(this.downloads.values());
+    return await db.select().from(downloads);
   }
 
   async getDownloadsByCategory(category: string): Promise<Download[]> {
-    return Array.from(this.downloads.values()).filter(download => download.category === category);
+    return await db.select().from(downloads).where(eq(downloads.category, category));
   }
 
   async createDownload(insertDownload: InsertDownload): Promise<Download> {
-    const id = this.currentId++;
-    const download: Download = { 
-      ...insertDownload, 
-      id, 
-      description: insertDownload.description || null,
-      createdAt: new Date() 
-    };
-    this.downloads.set(id, download);
+    const [download] = await db
+      .insert(downloads)
+      .values(insertDownload)
+      .returning();
     return download;
   }
 
   async deleteDownload(id: number): Promise<boolean> {
-    return this.downloads.delete(id);
+    const result = await db.delete(downloads).where(eq(downloads.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

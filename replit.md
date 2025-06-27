@@ -113,7 +113,16 @@ This is a full-stack real estate web application for Hiddekel Investments, a Zim
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes
+
+- June 27, 2025: Integrated PostgreSQL database
+  - Replaced in-memory storage with DatabaseStorage using Drizzle ORM
+  - All admin sections now properly display data from database
+  - Added missing GET /api/admin/gallery endpoint
+  - Populated database with sample stands, blog posts, and gallery images
+  - Fixed admin dashboard display issues
+
 ## Changelog
 
-Changelog:
-- June 24, 2025. Initial setup
+- June 24, 2025: Initial setup
+- June 27, 2025: Database integration and admin dashboard fixes
